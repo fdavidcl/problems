@@ -5,6 +5,7 @@
 #include <random>
 #include <chrono>
 
+// I'm not crazy, I generated this lookup table with a Ruby script ;)
 const unsigned bits[] = {
   0, // 0
   1, // 1
@@ -270,6 +271,7 @@ unsigned long long popcount_naive(unsigned size, uint16_t* data) {
   for (unsigned i = 0; i < size; ++i) {
     uint16_t num = data[i];
     while (num) {
+      // Naive approach: Get the last bit and shift the number
       acc += num & 1;
       num = num >> 1;
     }
@@ -282,6 +284,7 @@ unsigned long long popcount_lookup_table(unsigned size, uint8_t* data) {
   unsigned long long acc = 0;
 
   for (unsigned i = 0; i < size; ++i) {
+    // Look it up!
     acc += bits[data[i]];
   }
 
@@ -292,6 +295,8 @@ unsigned long long popcount_builtin(unsigned size, uint64_t* data) {
   unsigned long long acc = 0;
 
   for (unsigned i = 0; i < size; ++i) {
+    // https://gcc.gnu.org/onlinedocs/gcc/Other-Builtins.html
+    // This is really fast if your CPU has a dedicated instruction (and it should)
     acc += __builtin_popcountll(data[i]);
   }
 
